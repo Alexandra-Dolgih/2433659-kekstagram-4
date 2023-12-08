@@ -2,7 +2,7 @@ import { showBigPicture } from './big-picture.js';
 
 let photos = null;
 const picturesCollection = document.querySelector('.pictures');
-const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
+const pictureTemplate = document.querySelector('#picture').content;
 
 const createThumbnail = ( { url, description, likes, comments, id } ) => {
   const thumbnail = pictureTemplate.cloneNode(true);
@@ -15,7 +15,7 @@ const createThumbnail = ( { url, description, likes, comments, id } ) => {
   return thumbnail;
 };
 
-const thumbnailsInit = (data) => {
+const Initthumbnails = (data) => {
   photos = data.slice();
   if(photos) {
     photos.forEach((photo) => {
@@ -29,4 +29,4 @@ const thumbnailsInit = (data) => {
   }
 };
 
-export { thumbnailsInit };
+export { Initthumbnails };

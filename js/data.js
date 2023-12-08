@@ -1,13 +1,6 @@
-import {getRandomInteger} from './util.js';
+import { getRandomInt, getRandomArrayElement, createIdGenerator } from './util.js';
 
-const DESCRIPTIONS = [
-  'Море',
-  'Котик на солнце',
-  'Как хорошо в лесу летом',
-  'Улыбаюсь',
-  'Звёздная ночь',
-];
-
+const NAMES = ['Alexander', 'Dmitry', 'Ivan', 'Alina', 'Nikita', 'Alyona', 'Krokozyabra', 'Rostic'];
 const MESSAGES = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
@@ -16,53 +9,59 @@ const MESSAGES = [
   'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!',
 ];
-
-const NAMES = [
-  'Катя',
-  'Саша',
-  'Андрей',
-  'Гена',
-  'Кирилл',
-  'Алёна',
+const DESCRIPTIONS = [
+  'Holiday with family! I love my home and cake by mom',
+  'Hot summer #sea #relax #cool #shark',
+  'My cat Marsik #meow #brazilia',
+  'This week - HARD WORK! #team #XET_Development #project',
+  'The best friends!',
 ];
-
+const PICTURE_COUNT = 25;
 const AvatarId = {
   MIN: 1,
   MAX: 6,
 };
-
-const MessagesCount = {
+const LikeCount = {
+  MIN: 15,
+  MAX: 200,
+};
+const CommentCount = {
+  MIN: 0,
+  MAX: 30,
+};
+const StringCount = {
   MIN: 1,
   MAX: 2,
 };
 
-const CommentsCount = {
-  MIN: 0,
-  MAX: 30,
-};
+const createIdComment = createIdGenerator();
 
-const LikesCount = {
-  MIN: 15,
-  MAX: 200,
-};
+const createMessage = () => Array.from(
+  { length: getRandomInt(StringCount.MIN, StringCount.MAX) },
+  () => getRandomArrayElement(MESSAGES),
+).join(' ');
 
-const MAX_COUNT_PHOTOS = 25;
-
-const getComment = (_, id) => ({
-  id,
-  avatar: `img/avatar-${getRandomInteger(AvatarId.MIN, AvatarId.MAX)}.svg`,
-  message: MESSAGES.slice(0, getRandomInteger(MessagesCount.MIN, MessagesCount.MAX)),
-  name: NAMES[getRandomInteger(0, NAMES.length - 1)],
+const createComment = () => ({
+  id: createIdComment(),
+  avatar: `img/avatar-${getRandomInt(AvatarId.MIN, AvatarId.MAX)}.svg`,
+  message: createMessage(),
+  name: getRandomArrayElement(NAMES),
 });
 
-const getPhotoData = (_, id)=> ({
-  id,
-  url: `photos/${id}.jpg`,
-  description: DESCRIPTIONS[getRandomInteger(0, DESCRIPTIONS.length - 1)],
-  likes: getRandomInteger(LikesCount.MIN, LikesCount.MAX),
-  comments: Array.from({length: getRandomInteger(CommentsCount.MIN, CommentsCount.MAX)}, (getComment)),
+const createPicture = (index) => ({
+  id: index,
+  url: `photos/${index}.jpg`,
+  description: getRandomArrayElement(DESCRIPTIONS),
+  likes: getRandomInt(LikeCount.MIN, LikeCount.MAX),
+  comments: Array.from(
+    { length: getRandomInt(CommentCount.MIN, CommentCount.MAX) },
+    createComment,
+  ),
 });
 
-const getPhotos = () => Array.from({length: MAX_COUNT_PHOTOS}, getPhotoData);
+const getPhotos = () => Array.from(
+  { length: PICTURE_COUNT },
+  (_, pictureIndex) => createPicture(pictureIndex + 1),
+);
 
-export {getPhotos};
+export { getPhotos };
